@@ -1,4 +1,4 @@
-# PROGRESS.md — Athopia Golf
+# PROGRESS.md — Nano Fotboll Golf
 > Senast uppdaterad: 2026-06-07
 
 ## Statusöversikt

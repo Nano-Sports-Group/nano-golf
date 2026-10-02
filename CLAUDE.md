@@ -1,4 +1,9 @@
 @AGENTS.md
+> **Namnbyte 2026-09-23: Athopia → Nano Fotboll** (moderbolag Nano Sports Group,
+> domän `nanofotboll.se`; repot hette tidigare `athopia-golf`). Kod-identifierare som
+> medvetet behåller athopia-namnet — `/opt/athopia-os`, `@athopia/*`, `ATHOPIA_*`-env,
+> `athopia_*`-kolumner, `x-athopia-os-secret`, `athopia://` — är listade i
+> workspace-filen `docs/NAMNBYTE-2026-09-23.md`. Byt dem inte i förbifarten.
 
 <!-- rtk-instructions v2 -->
 # RTK (Rust Token Killer) - Token-Optimized Commands

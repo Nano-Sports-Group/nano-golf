@@ -104,7 +104,9 @@ export function FeedClient() {
   }, [offset])
 
   useEffect(() => {
-    void load(true)
+    // ponytail: fire-and-forget async load; not a synchronous setState-in-effect
+    const timer = setTimeout(() => void load(true), 0)
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

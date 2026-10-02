@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useState, type ReactNode } from 'react'
 import { loadPrefs, savePrefs, type UserPrefs } from '@/lib/user-prefs'
 
 interface UserPrefsContextValue {
@@ -12,17 +12,8 @@ interface UserPrefsContextValue {
 const UserPrefsContext = createContext<UserPrefsContextValue | null>(null)
 
 export function UserPrefsProvider({ children }: { children: ReactNode }) {
-  const [prefs, setPrefs] = useState<UserPrefs>({
-    userId: '',
-    favoritePlayers: [],
-    tours: [],
-    notifications: [],
-    hasSetup: false,
-  })
-
-  useEffect(() => {
-    setPrefs(loadPrefs())
-  }, [])
+  // ponytail: lazy initializer reads localStorage once on mount instead of an effect + setState round-trip
+  const [prefs, setPrefs] = useState<UserPrefs>(() => loadPrefs())
 
   function updatePrefs(patch: Partial<UserPrefs>) {
     setPrefs((prev) => {
