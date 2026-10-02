@@ -5,10 +5,9 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { useUserPrefs } from '@/context/UserPrefsContext'
-import { supabase, SPORT } from '@/lib/supabase'
 
 export default function NyTraadPage() {
-  const { prefs, hasSetup } = useUserPrefs()
+  const { hasSetup } = useUserPrefs()
   const router = useRouter()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
@@ -20,18 +19,17 @@ export default function NyTraadPage() {
     setSubmitting(true)
     setError('')
 
-    const authorName = prefs.favoritePlayers[0] ?? 'Anonym'
-
-    const { error: err } = await supabase.from('forum_threads').insert({
-      title: title.trim(),
-      content: content.trim(),
-      author_id: prefs.userId,
-      author_name: authorName,
-      sport: SPORT,
+    // Skrivningen går via servern: identiteten sätts från Clerk-sessionen,
+    // aldrig härifrån. Se app/api/forum/route.ts.
+    const res = await fetch('/api/forum', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: title.trim(), content: content.trim() }),
     })
 
-    if (err) {
-      setError('Något gick fel. Försök igen.')
+    if (!res.ok) {
+      const { error: msg } = await res.json().catch(() => ({ error: null }))
+      setError(msg ?? 'Något gick fel. Försök igen.')
       setSubmitting(false)
       return
     }

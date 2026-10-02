@@ -32,7 +32,7 @@ function timeAgo(dateStr: string) {
 
 export default function ThreadPage() {
   const { threadId } = useParams<{ threadId: string }>()
-  const { prefs, hasSetup } = useUserPrefs()
+  const { hasSetup } = useUserPrefs()
   const [thread, setThread] = useState<Thread | null>(null)
   const [replies, setReplies] = useState<Reply[]>([])
   const [reply, setReply] = useState('')
@@ -56,14 +56,16 @@ export default function ThreadPage() {
     if (!reply.trim() || !hasSetup) return
     setSubmitting(true)
 
-    const authorName = prefs.favoritePlayers[0] ?? 'Anonym'
-
-    await supabase.from('forum_replies').insert({
-      thread_id: threadId,
-      content: reply.trim(),
-      author_id: prefs.userId,
-      author_name: authorName,
+    // Serverväg — identiteten sätts från Clerk-sessionen. Se app/api/forum/route.ts.
+    const res = await fetch('/api/forum', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ kind: 'reply', threadId, content: reply.trim() }),
     })
+    if (!res.ok) {
+      setSubmitting(false)
+      return
+    }
 
     const { data } = await supabase
       .from('forum_replies')
